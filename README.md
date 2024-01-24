@@ -1,17 +1,16 @@
 # Template Nextjs Blog
 
-|NO|Tools | Description |
-|--|------|-------------|
-|1|tailwindcss|-|
-|2|shadcn/ui|-|
-
-
+| NO  | Tools       | Description |
+| --- | ----------- | ----------- |
+| 1   | tailwindcss | -           |
+| 2   | shadcn/ui   | -           |
 
 ## Setup Prisma
 
 1. `yarn add prisma`
 2. `npx prisma init` add model to `prisma/schema.prisma` for this project i place my prisma schema on `services/` folder so you must add step 3
 3. on package.json add this
+
 ```
 //other script
 //package.json
@@ -24,6 +23,7 @@
 ```
 
 sample model
+
 ```
 //schema.prisma
 generator client {
@@ -57,14 +57,14 @@ model User {
 ```
 
 4. install prisma `yarn add prisma`
-5. run command `npx prisma` to check if prisma has install properly in our project 
+5. run command `npx prisma` to check if prisma has install properly in our project
 6. run command `npx prisma push` to push our model and generate table on our db
 7. run command `npx prisma studio` to run prisma UI interface in port 5555
 8. install prisma client `npm install @prisma/client` to generate and prepare prisma cleint so can access your database from Next.js using Prisma
 9. run command `npx prisma generate`
 
 ## Setup Shadcn/UI
+
 1. run command `npx shadcn-ui@latest init`
 
 ## Setup NextAuth
-
