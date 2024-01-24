@@ -1,136 +1,70 @@
-## Template Nextjs 14 (typescript, tailwindcss, jest, rtl, eslint, prettier, husky, lint-staged, commitlint, commitizen)
+# Template Nextjs Blog
 
-project ini menggunakan [Next.js](https://nextjs.org/) 14 project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app) dan tambahan tools yang sering gua pake saat setup project nextjs
+|NO|Tools | Description |
+|--|------|-------------|
+|1|tailwindcss|-|
+|2|shadcn/ui|-|
 
-## Cara Install
 
-1. jalankan command `npx create-next-app@latest`
-2. install _husky_ `npx husky-init && yarn` dan jalankan command `yarn prepare`
-3. install _prettier_ ` yarn add -D prettier eslint-config-prettier eslint-plugin-prettier prettier-plugin-tailwindcss`
-4. setup file `.eslintrc.json`
 
+## Setup Prisma
+
+1. `yarn add prisma`
+2. `npx prisma init` add model to `prisma/schema.prisma` for this project i place my prisma schema on `services/` folder so you must add step 3
+3. on package.json add this
 ```
-{
-  "extends": ["next/core-web-vitals", "prettier"],
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier":[ "warn",
-    {
-      "endOfLine": "auto"
-    }]
-  }
-}
-```
+//other script
+//package.json
 
-5. add .prettierrc.json file `touch .prettierrc.json` di root project, dan tambahkan code dibawah
-
-```
-{
-  "trailingComma": "es5",
-  "semi": true,
-  "tabWidth": 2,
-  "singleQuote": true,
-  "jsxSingleQuote": true,
-  "plugins": ["prettier-plugin-tailwindcss"]
+"prisma" : {
+  "schema" : "services/prisma/schema.prisma"
 }
 
+//other script
 ```
 
-6. install lint-staged `yarn add -D lint-staged`
-7. tambahkan script ini di _`package.json`_
-
+sample model
 ```
-scripts : {
-    ...
-    "lint-staged": "lint-staged",
-    "type-check": "tsc --project tsconfig.json --pretty --noEmit && echo ",
+//schema.prisma
+generator client {
+    provider = "prisma-client-js"
 }
-```
-
-8. add file .lintstagedrc.js di root project `touch .lintstagedrc.json` dan tambahkan code dibawah
-
-```
-module.exports = {
-  // Run type-check on changes to TypeScript files
-  '**/*.ts?(x)': () => 'yarn type-check',
-  // Lint & Prettify TS and JS files
-  '**/*.(ts|tsx|js|mjs)': (filenames) => [
-    `yarn lint . ${filenames.join(' ')}`,
-    `yarn prettier --write ${filenames.join(' ')}`,
-  ],
-  // Prettify only Markdown and JSON files
-  '**/*.(md|json)': filenames => `yarn prettier --write ${filenames.join(' ')}`
-};
-
-```
-
-9. Ganti `yarn test` di file .husky/pre-commit `yarn lint-staged`
-10. add commitlint `yarn add -D @commitlint/config-conventional @commitlint/cli` add file commitlint.config.js `touch commitlint.config.js`
-11. add commitizen `yarn add -D commitizen` dan tambahkan file .cz.json di root project `touch .cz.json`dan tambahkan code dibawah
-
-```
-{
-  "path": "cz-conventional-changelog"
+datasource db {
+  provider = "postgresql"
+  url = env("POSTGRES_PRISMA_URL") // uses connection pooling
+  directUrl = env("POSTGRES_URL_NON_POOLING") // uses a direct connection
 }
-```
 
-12. add commit-msg `npx husky add .husky/commit-msg 'npx --no-install commitlint --edit "$1"'`
-13. add post-merge `npx husky add .husky/post-merge 'yarn'`
-14. add jest rtl `-D @types/jest jest jest-environment-jsdom @testing-library/react @testing-library/jest-dom `
-15. add jest.config.mjs `touch jest.config.mjs`
-
-```
-import nextJest from "next/jest.js";
-
-const createJestConfig = nextJest({
-  dir: "./",
-});
-
-/** @type {import('jest').Config} */
-const config = {
-  collectCoverageFrom: [
-    "app/**/*.{js,jsx,ts,tsx}",
-    "!**/*.d.ts",
-    "!**/node_modules/**",
-  ],
-  testEnvironment: "jest-environment-jsdom",
-  setupFilesAfterEnv: ["<rootDir>/jest.setup.js"],
-  testPathIgnorePatterns: ["<rootDir>/node_modules/", "<rootDir>/.next/"],
-};
-
-export default createJestConfig(config);
-```
-
-15. tambahkan file jest.setup.js di root project `touch jest.setup.js`
-
-```
-import "@testing-library/jest-dom";
-```
-
-16. Update tsconfig file with
-
-```
-"include": [ "jest.setup.js"]
-```
-
-17. Update package.json with new test scripts
-
-```
-{
-  "test": "jest --coverage",
-  "test:w": "jest --watch"
+model Post {
+    id String @default(cuid()) @id
+    title String
+    content String?
+    published Boolean @default(false)
+    author User? @relation(fields : [authorId], references : [id])
+    authorId String?
 }
-```
 
-18. **_optional_** setup husky to support testing on push, add folder **test**
-
-```
-npx husky add .husky/pre-push "yarn test"
-```
-__test__/home.test.tsx
-
-test('dummy test', () => {
-  expect(true).toBe(true);
-});
+model User {
+    id String @default(cuid()) @id
+    name String?
+    email String? @unique
+    createdAt DateTime
+    updatedAt DateTime
+    posts Post[]
+    @@map(name : "users")
+}
 
 ```
+
+4. install prisma `yarn add prisma`
+5. run command `npx prisma` to check if prisma has install properly in our project 
+6. run command `npx prisma push` to push our model and generate table on our db
+7. run command `npx prisma studio` to run prisma UI interface in port 5555
+8. install prisma client `npm install @prisma/client` to generate and prepare prisma cleint so can access your database from Next.js using Prisma
+9. run command `npx prisma generate`
+
+## Setup Shadcn/UI
+1. run command `npx shadcn-ui@latest init`
+
+## Setup NextAuth
+
